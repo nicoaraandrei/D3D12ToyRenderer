@@ -20,10 +20,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="DxContext.cpp" />
     <ClCompile Include="DxDebug\DXDebugLayer.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="D3D\DxContext.h" />
     <ClInclude Include="DxDebug\DXDebugLayer.h" />
     <ClInclude Include="Support\ComPointer.h" />
     <ClInclude Include="Support\WinInclude.h" />
