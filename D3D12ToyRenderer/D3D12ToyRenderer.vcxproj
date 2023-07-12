@@ -20,7 +20,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="DxContext.cpp" />
+    <ClCompile Include="D3D\DxContext.cpp" />
     <ClCompile Include="DxDebug\DXDebugLayer.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>

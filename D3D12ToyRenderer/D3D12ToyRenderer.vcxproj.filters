@@ -3,7 +3,7 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="DxDebug\DXDebugLayer.cpp" />
-    <ClCompile Include="DxContext.cpp" />
+    <ClCompile Include="D3D\DxContext.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Support">
