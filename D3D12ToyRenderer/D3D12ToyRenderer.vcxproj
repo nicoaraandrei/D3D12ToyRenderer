@@ -23,11 +23,13 @@
     <ClCompile Include="D3D\DxContext.cpp" />
     <ClCompile Include="DxDebug\DXDebugLayer.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Support\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="D3D\DxContext.h" />
     <ClInclude Include="DxDebug\DXDebugLayer.h" />
     <ClInclude Include="Support\ComPointer.h" />
+    <ClInclude Include="Support\Window.h" />
     <ClInclude Include="Support\WinInclude.h" />
   </ItemGroup>
   <ItemGroup>
