@@ -2,6 +2,7 @@
 
 #include <Support/WinInclude.h>
 #include <Support/ComPointer.h>
+#include <D3D/DxContext.h>
 
 class DXWindow
 {
@@ -9,10 +10,16 @@ class DXWindow
 		bool Init();
 		void Shutdown();
 		void Update();
+		void Present();
 
 		inline bool ShouldClose() const
 		{
 			return m_shouldClose;
+		}
+
+		static constexpr size_t GetFrameCount()
+		{
+			return 2;
 		}
 
 	private:
@@ -22,6 +29,8 @@ class DXWindow
 		ATOM m_wndClass = 0;
 		HWND m_window = nullptr;
 		bool m_shouldClose = false;
+
+		ComPointer<IDXGISwapChain4> m_swapChain;
 
 		// Window singleton
 	public:

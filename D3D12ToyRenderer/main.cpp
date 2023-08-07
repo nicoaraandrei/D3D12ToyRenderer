@@ -20,7 +20,10 @@ int main()
 			auto* cmdList = DXContext::Get().InitCommandList();
 
 			DXContext::Get().ExecuteCommandList();
+			DXWindow::Get().Present();
 		}
+		// Flush the command queue before releasing swapchain
+		DXContext::Get().Flush(DXWindow::GetFrameCount());
 
 		DXWindow::Get().Shutdown();
 		DXContext::Get().Shutdown();

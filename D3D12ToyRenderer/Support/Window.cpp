@@ -37,11 +37,45 @@ bool DXWindow::Init()
 		monitorInfo.rcWork.left + 100, monitorInfo.rcWork.top + 100, 1920, 1080,
 		nullptr, nullptr, wcex.hInstance, nullptr);
 
-	return m_window != nullptr;
+	if (m_window == nullptr)
+		return false;
+
+	// Describe swap chain
+	DXGI_SWAP_CHAIN_DESC1 swd{};
+	DXGI_SWAP_CHAIN_FULLSCREEN_DESC fswd{};
+
+	swd.Width = 1920;
+	swd.Height = 1080;
+	swd.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	swd.Stereo = false;
+	swd.SampleDesc.Count = 1; // 1 pixel per pixel sampling
+	swd.SampleDesc.Quality = 0; // NO MSAA
+	swd.BufferUsage = DXGI_USAGE_BACK_BUFFER | DXGI_USAGE_RENDER_TARGET_OUTPUT; // be able to write it on the gpu using back buffer and output the result to the Render target
+	swd.BufferCount = GetFrameCount(); // 2 buffers, one is displayed and the other is written to and they are exchanged, 3 buffers for vsync usage
+	swd.Scaling = DXGI_SCALING_STRETCH;
+	swd.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+	swd.AlphaMode = DXGI_ALPHA_MODE_IGNORE;
+	swd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH | DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING;
+
+	fswd.Windowed = true;
+
+	// Swap chain creation
+	auto& factory = DXContext::Get().GetDXGIFactory();
+	ComPointer<IDXGISwapChain1> sc1;
+
+	factory->CreateSwapChainForHwnd(DXContext::Get().GetCommandQueue(), m_window, &swd, &fswd, nullptr, &sc1);
+
+	if (!sc1.QueryInterface(m_swapChain))
+	{
+		return false;
+	}
+	return true;
 }
 
 void DXWindow::Shutdown()
 {
+	m_swapChain.Release();
+
 	if (m_window)
 	{
 		DestroyWindow(m_window);
@@ -61,6 +95,11 @@ void DXWindow::Update()
 		TranslateMessage(&msg);
 		DispatchMessageW(&msg);
 	}
+}
+
+void DXWindow::Present()
+{
+	m_swapChain->Present(1, 0);
 }
 
 LRESULT CALLBACK DXWindow::OnWindowMessage(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam)
