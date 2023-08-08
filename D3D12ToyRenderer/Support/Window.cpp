@@ -69,6 +69,7 @@ bool DXWindow::Init()
 	{
 		return false;
 	}
+
 	return true;
 }
 
@@ -102,10 +103,77 @@ void DXWindow::Present()
 	m_swapChain->Present(1, 0);
 }
 
+void DXWindow::Resize()
+{
+	RECT clientRect;
+	// Get the window client rect(width,height)
+	if (GetClientRect(m_window, &clientRect))
+	{
+		m_width = clientRect.right - clientRect.left;
+		m_height = clientRect.bottom - clientRect.top;
+
+		m_swapChain->ResizeBuffers(GetFrameCount(), m_width, m_height, DXGI_FORMAT_UNKNOWN, DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH | DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING); //DXGI_FORMAT_UNKNOWN keeps the old format
+		m_shouldResize = false;
+	}
+}
+
+void DXWindow::SetFullscreen(bool enabled)
+{
+	// Update window styling
+	DWORD style = WS_OVERLAPPEDWINDOW | WS_VISIBLE;
+	DWORD exStyle = WS_EX_OVERLAPPEDWINDOW | WS_EX_APPWINDOW;
+
+	if (enabled)
+	{
+		style = WS_POPUP | WS_VISIBLE;
+		exStyle = WS_EX_APPWINDOW;
+	}
+
+	SetWindowLongW(m_window, GWL_STYLE, style);
+	SetWindowLongW(m_window, GWL_EXSTYLE, exStyle);
+	
+	// Adjust window size
+	if (enabled)
+	{
+		HMONITOR monitor = MonitorFromWindow(m_window, MONITOR_DEFAULTTONEAREST);
+		MONITORINFO monitorInfo{};
+		monitorInfo.cbSize = sizeof(monitorInfo);
+		if (GetMonitorInfoW(monitor, &monitorInfo))
+		{
+			SetWindowPos(m_window, nullptr, 
+				monitorInfo.rcMonitor.left,
+				monitorInfo.rcMonitor.top,
+				monitorInfo.rcMonitor.right - monitorInfo.rcMonitor.left,
+				monitorInfo.rcMonitor.bottom - monitorInfo.rcMonitor.top,
+				SWP_NOZORDER
+			);
+		}
+	}
+	else
+	{
+		ShowWindow(m_window, SW_MAXIMIZE);
+	}
+
+	m_isFullscreen = enabled;
+}
+
 LRESULT CALLBACK DXWindow::OnWindowMessage(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	switch (msg)
 	{
+		case WM_KEYDOWN:
+			if (wParam == VK_F11)
+			{
+				Get().SetFullscreen(!Get().IsFullscreen());
+			}
+			break;
+		case WM_SIZE:
+			// lParam is 0 if window is minimized
+			if (lParam && HIWORD(lParam) != Get().m_height || LOWORD(lParam) != Get().m_width)
+			{
+				Get().m_shouldResize = true;
+			}
+			break;
 		case WM_CLOSE:
 			Get().m_shouldClose = true;
 			return 0;

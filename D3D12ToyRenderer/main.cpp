@@ -13,12 +13,25 @@ int main()
 
 	if (DXContext::Get().Init() && DXWindow::Get().Init())
 	{
+		DXWindow::Get().SetFullscreen(true);
 		while (!DXWindow::Get().ShouldClose())
 		{
+			// Process pending window events/message
 			DXWindow::Get().Update();
 
+			// Handle window resizing
+			if (DXWindow::Get().ShouldResize())
+			{
+				DXContext::Get().Flush(DXWindow::GetFrameCount());
+				DXWindow::Get().Resize();
+			}
+
+			// Begin drawing
 			auto* cmdList = DXContext::Get().InitCommandList();
 
+			// Draw stuff
+
+			// Finish drawing and present buffer to the screen
 			DXContext::Get().ExecuteCommandList();
 			DXWindow::Get().Present();
 		}

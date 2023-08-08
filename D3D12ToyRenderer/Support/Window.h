@@ -11,10 +11,22 @@ class DXWindow
 		void Shutdown();
 		void Update();
 		void Present();
+		void Resize();
+		void SetFullscreen(bool enabled);
 
 		inline bool ShouldClose() const
 		{
 			return m_shouldClose;
+		}
+
+		inline bool ShouldResize() const
+		{
+			return m_shouldResize;
+		}
+
+		inline bool IsFullscreen() const
+		{
+			return m_isFullscreen;
 		}
 
 		static constexpr size_t GetFrameCount()
@@ -29,6 +41,10 @@ class DXWindow
 		ATOM m_wndClass = 0;
 		HWND m_window = nullptr;
 		bool m_shouldClose = false;
+		bool m_shouldResize = false;
+		bool m_isFullscreen = false;
+		UINT m_width = 1920;
+		UINT m_height = 1080;
 
 		ComPointer<IDXGISwapChain4> m_swapChain;
 
