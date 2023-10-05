@@ -30,6 +30,9 @@ int main()
 			auto* cmdList = DXContext::Get().InitCommandList();
 
 			// Draw stuff
+			DXWindow::Get().BeginFrame(cmdList);
+
+			DXWindow::Get().EndFrame(cmdList);
 
 			// Finish drawing and present buffer to the screen
 			DXContext::Get().ExecuteCommandList();

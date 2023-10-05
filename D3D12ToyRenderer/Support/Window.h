@@ -14,6 +14,9 @@ class DXWindow
 		void Resize();
 		void SetFullscreen(bool enabled);
 
+		void BeginFrame(ID3D12GraphicsCommandList* cmdList);
+		void EndFrame(ID3D12GraphicsCommandList* cmdList);
+
 		inline bool ShouldClose() const
 		{
 			return m_shouldClose;
@@ -52,6 +55,7 @@ class DXWindow
 
 		ComPointer<IDXGISwapChain4> m_swapChain;
 		ComPointer<ID3D12Resource2> m_buffers[FrameCount];
+		size_t m_currentBufferIndex = 0;
 
 		// Window singleton
 	public:
